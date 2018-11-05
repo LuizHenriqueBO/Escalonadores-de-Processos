@@ -1,0 +1,68 @@
+import lib
+
+lib.item_da_lib()
+
+----
+
+from lib import item_da_lib
+
+item_da_lib()
+
+----
+
+from lib import item_da_lib as idl
+
+
+idl()
+
+-----
+
+lista = []
+
+for i in lista:
+	print(i)
+
+-----
+
+dicionario = {}
+
+dicionario['A'] = 50
+
+print(dicionario['A'])
+
+for key, value in dicionario.items():
+	print('{}: {}'.format(key, value))
+
+-----
+
+int main(){
+
+}
+
+if __name__ == '__main__':
+	main()
+
+def main():
+	....
+	...
+	..
+	.
+
+-----
+
+class nome_classe(object):
+	def __init__(self, attr, attr2):
+		# Contructor
+		self.a = attr
+		self.b = attr2	
+		...
+	
+	def funcaoP(self):
+		...
+		return self.a + self.b
+
+	
+-----
+
+list, dict
+
