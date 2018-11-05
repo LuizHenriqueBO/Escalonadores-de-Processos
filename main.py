@@ -1,5 +1,28 @@
+import BCP
+
+
+
 def fifo(lista):
-    
+    tempo_de_cpu = 0
+    while 
+
+
+
+'''
+Algoritmo FIFO
+ procedure FIFO(processos)
+	contador ← 0
+	while True do
+		em_espera ← processos.obter(contador)
+		executar ← em_espera[0]
+		executar.exe()
+		contador ← contador + 1
+		if executar.finalizado() then
+			em_espera.remove(0)
+		if em_espera.vazia() then
+			break
+'''
+
 
 
 
@@ -18,6 +41,8 @@ def leitor(file_name):
     return file_list
 
 
+
+'''
 class Processo(object):
     def __init__(self, id, df, prio, dc, io):
         self.id = id
@@ -31,7 +56,7 @@ class Processo(object):
 
     def __repr__(self):
         return '{},{},{},{},{}'.format(self.id, self.df, self.prio, self.dc, self.io)
-
+'''
 def main():
     file_r = leitor("processos.txt")
     #print(file_r)
@@ -60,8 +85,7 @@ def main():
             processo = int(valor)
 
     if(processo == 1):
-        for i in lista_processo:
-            fifo(lista_processo[i])
+        fifo(lista_processo)
         #shortest_job_first()
     elif(processo == 2):
         prioridade()
