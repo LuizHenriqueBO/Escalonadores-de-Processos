@@ -1,9 +1,32 @@
-import BCP
+from BCP import BCP
+from gerenciador import gerenciador     # do arquivo gerenciador importa a classe gerenciandor
+
+
 
 
 
 def fifo(lista):
-    tempo_de_cpu = 0
+
+    bcp = BCP()
+
+    for(i in lista):
+        bcp.set_id = lista[0]
+        bcp.set_tempo_CPU = lista[1]
+        bcp.set_prioridade = lista[2]
+        bcp.set_tempo_chegada = lista[3]
+        bcp.set_lista_io = lista[4:]
+
+    # falta testar pra ver se funciona os getters e setters
+
+
+
+
+    GE = gerenciador()          # estânciando a classe gerenciador 
+
+
+    GE.set_lista_pronto()
+
+
     while 
 
 
