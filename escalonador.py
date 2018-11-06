@@ -22,7 +22,7 @@ class Escalonador():
         return self.timer
 
 
-###################--------FIFO------##################
+    ###################--------FIFO------##################
 
     def fifo(self, gp):
         print("entrei")
@@ -47,7 +47,7 @@ class Escalonador():
                 processo.executar()
 
 
-###################--------SJF------##################
+    ###################--------SJF------##################
 
 
     def sjf(self, gp):
@@ -117,4 +117,50 @@ class Escalonador():
 
 
 
-###################--------PRIORIDADE------##################
+    ###################--------PRIORIDADE------##################
+
+
+    ###################--------RoundRobin------##################
+
+    def RoundRobin(self, gp):
+        print("entrei no RoundRobin")
+
+        quantum = 3         # tempo que ficará no processador
+        self.timer= 0
+
+        # Ordeno a lista de processos por ordem de chegada
+        lista_processos = gp.get_lista_processos()
+        lista_processos.sort(key = lambda x: x.get_tempo_chegada())
+
+        # adiciona o primeiro processo na lista de pronto e tira da lista de processo
+        gp.add_lista_pronto(lista_processos[0])
+        del(lista_processos[0])
+
+        # caso ainda tenha processo na lista de pronto, continua executando o algoritmo
+        while(len(gp.get_lista_pronto()) > 0):
+            
+            # se o tempo atual for menor que o tempo de chegada do primeiro processo da lista de pronto,
+            # o processador fica ocioso, caso contrário, executa o processo
+            if(self.timer < gp.get_lista_pronto()[0].get_tempo_chegada()):
+                print("OCIOSO")
+                self.timer +=1
+            else:
+                # processo executando é o primeiro processo pronto
+                processo_executando = gp.get_lista_pronto()[0]
+
+                for tempo in range(quantum):
+                    processo_executando.decrementar_tempo_cpu()
+
+                    if(processo_executando.solicita_io()):
+                        
+                        gp.add_lista_bloqueio(processo_executando)
+
+                    
+                        #print("Entrei io")
+                        print("processo ocioso")
+                        self.timer += 6
+                    else:        
+                        self.timer+=1
+                    processo.executar()
+
+
