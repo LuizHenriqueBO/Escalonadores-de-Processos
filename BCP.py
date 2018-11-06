@@ -22,43 +22,51 @@ class BCP():
         return self.tempo_inicio
     
     def get_tempo_CPU(self):
-        return self.get_tempo_CPU
+        return self.tempo_CPU
 
     def get_lista_io(self):
         return self.lista_IO            # testar pra ver se funciona com pop
 
-    def remove_lista_io(self):
-        self.lista_IO.remove(self.lista_IO[0])
+    def get_tempo_executado(self):
+        return self.tempo_executado
 
 
-################# setters ############################
+ ################# setters ############################
                 
     
     def set_id(self, id):
-        self.id = id
+        self.id = int(id)
     
     def set_prioridade(self, prioridade):
-        self.prioridade = prioridade
+        self.prioridade = int(prioridade)
     
     def set_tempo_chegada(self, chegada):
-        self.tempo_chegada = chegada
+        self.tempo_chegada = int(chegada)
     
     def set_tempo_inicio(self, tempo_inicio):
-        self.tempo_inicio = tempo_inicio
+        self.tempo_inicio = int(tempo_inicio)
     
     def set_tempo_CPU(self, tempo_cpu):
-        self.get_tempo_CPU = tempo_cpu
+        self.tempo_CPU = int(tempo_cpu)
 
     def set_lista_io(self, lista):
-        self.lista_IO = lista
+        print(lista)
+        self.lista_IO = list(map(int,lista)) if lista and lista[-1] else []
+
+   
+
+        ###################### metodos #############
+    def executar(self):
+        self.tempo_executado +=1
+    
+    def remove_lista_io(self):
+        self.lista_IO.remove(self.lista_IO[0])
+    
 
     def decrementar_tempo_cpu(self):
         self.tempo_CPU -=1
 
-        ###################### métodos #############
-    def executar(self):
-        self.tempo_executado +=1
-    
+
     def finalizado(self):
         if(self.tempo_executado == self.tempo_CPU):
             return True
@@ -66,7 +74,10 @@ class BCP():
             return False
 
     def solicita_io(self):
+        #print("Solicita io %d" % self.tempo_executado)
         if(self.tempo_executado in self.lista_IO):
+            print("Entrei em IO %d" % self.tempo_executado)
+            #print("QQQ")
             return True
         else:
             return False
