@@ -16,7 +16,7 @@ class BCP():
         return self.prioridade
     
     def get_tempo_chegada(self):
-        return int(self.tempo_chegada)
+        return self.tempo_chegada
     
     def get_tempo_inicio(self):
         return self.tempo_inicio
@@ -47,11 +47,7 @@ class BCP():
         self.tempo_inicio = int(tempo_inicio)
     
     def set_tempo_CPU(self, tempo_cpu):
-<<<<<<< HEAD
         self.tempo_CPU = int(tempo_cpu)
-=======
-        self.get_tempo_CPU = int(tempo_cpu)
->>>>>>> 89c4bbeec53facb11cc6b7ce86877fea260c945b
 
     def set_lista_io(self, lista):
         print(lista)

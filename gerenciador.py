@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
- 
->>>>>>> 89c4bbeec53facb11cc6b7ce86877fea260c945b
 class Gerenciador():
     def __init__(self):
         self.lista_processos = []
