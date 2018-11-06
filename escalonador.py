@@ -39,7 +39,7 @@ class Escalonador():
         for processo in lista_processos:
             #print(processo.get_tempo_CPU)
             processo.set_tempo_inicio(self.timer)
-            print("Cheguei no tempo %d" %(processo.get_tempo_inicio()))
+            print("Ganhei o processador no tempo %d e cheguei no tempo %d" %(processo.get_tempo_inicio(), processo.get_tempo_chegada()))
             for tempo in range(processo.get_tempo_CPU):
                 if processo.solicita_io():
                     #print("Entrei io")
@@ -59,7 +59,7 @@ class Escalonador():
         self.timer = 0
         #lista_processos.sort(key = lambda x: x.get_tempo_CPU())
         lista_processos.sort(key = lambda x: x.get_tempo_chegada())
-        print(lista_processos[3].get_tempo_chegada())
+        #print(lista_processos[3].get_tempo_chegada())
 
 
 
@@ -70,28 +70,44 @@ class Escalonador():
             print("OCIOSO")
             self.timer +=1
             
-        print('ENTREI AQUI')
         gp.add_lista_pronto(lista_processos[0])
         lista_processos.remove(lista_processos[0])
-        
-        for processo in gp.get_lista_pronto():
-            #print(processo)
-           processo.set_tempo_inicio(self.timer)
-            
-        for tempo in range(processo.get_tempo_CPU):
-
-            if processo.solicita_io():
-                #print("Entrei io")
-                print("processo ocioso")
-                self.timer += 6
-            else:        
-                self.timer+=1
-            processo.executar()
 
         for p in lista_processos:
-            if p.get_tempo_chegada <= self.timer:
-                gp.add_lista_pronto(p)
-                lista_processos.remove(p)
-            #gp.lista_pronto.remove(processo)
-            gp.lista_pronto.sort(key = lambda x: x.get_tempo_CPU())           
+            print("ID = %s" % (p.get_id()))
+
+        
+        #for processo in gp.get_lista_pronto():
+            #print(processo)
+    
+        while(len(gp.lista_pronto) > 0):
+            gp.lista_pronto[0].set_tempo_inicio(self.timer)
+            print("Ganhei o processador no tempo %d e cheguei no tempo %d" %(gp.lista_pronto[0].get_tempo_inicio(), gp.lista_pronto[0].get_tempo_chegada())) 
+            for tempo in range(gp.lista_pronto[0].get_tempo_CPU):
+
+                if gp.lista_pronto[0].solicita_io():
+                    #print("Entrei io")
+                    print("processo ocioso")
+                    self.timer += 6
+                else:        
+                    self.timer+=1
+                gp.lista_pronto[0].executar()
+            del gp.lista_pronto[0]    
+            print("Timer %d" %self.timer)
+            for p in lista_processos:
+                #print("ID = %s" % (p.get_id()))
+                #print(p.get_id())
+                # PEGAR O ID COM O .INDEX 
+                if p.get_tempo_chegada() <= self.timer:
+                    print("ID = %s" % (p.get_id()))
+                    gp.add_lista_pronto(p)
+                    lista_processos.remove(p)
+                #gp.lista_pronto.remove(processo)
+            #print(gp.lista_pronto[1].get_tempo_CPU)    
+            gp.lista_pronto.sort(key = lambda x: x.get_tempo_CPU)
+            print('\n\n\n')
+            for p in gp.lista_pronto:
+                print(p.get_id())
+            print('\n\n\n')  
+               
 
