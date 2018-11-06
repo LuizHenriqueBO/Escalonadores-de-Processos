@@ -1,4 +1,4 @@
-
+ 
 class Gerenciador():
     def __init__(self):
         self.lista_processos = []
@@ -8,7 +8,7 @@ class Gerenciador():
     
     ##### getters
     def get_lista_pronto(self):
-        return self.lista_processo[0]
+        return self.lista_pronto
     
     def get_lista_bloqueado(self):
         return self.lista_bloqueado[0]
@@ -26,5 +26,5 @@ class Gerenciador():
 
     def add_lista_processos(self, processo):
         self.lista_processos.append(processo)
-
+    
     
