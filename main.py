@@ -38,7 +38,7 @@ def main():
         print(i.get_id(), i.get_tempo_chegada(), i.get_lista_io(), i.get_tempo_CPU())
              
     escalonador = Escalonador()
-    escalonador.sjf(gp)
+    escalonador.prioridade(gp)
     print(escalonador.tempo_total())
     'Tempo total {}'.format(escalonador.tempo_total())
 

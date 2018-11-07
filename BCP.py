@@ -9,6 +9,9 @@ class BCP():
         self.tempo_executado = 0
         self.lista_IO = []
 
+        self.tempo_executando_io = 0
+        self.tempo_espera = 0
+
     def get_id(self):
         return self.id
     
@@ -64,7 +67,11 @@ class BCP():
     
 
     def decrementar_tempo_cpu(self):
-        self.tempo_CPU -=1
+        if(self.tempo_CPU  <= 0):
+            return False
+        else:
+            self.tempo_CPU -=1
+            return True
 
 
     def finalizado(self):

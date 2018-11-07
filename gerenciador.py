@@ -14,14 +14,14 @@ class Gerenciador():
         return self.lista_bloqueado[0]
 
     def get_lista_processos(self):
-        return self.lista_processos[0]
+        return self.lista_processos
 
     def get_lista_finalizados(self):
         return self.lista_finalizados[0]
 
 
     #### add
-    def add_lista_finalizado(self, processo):
+    def add_lista_finalizados(self, processo):
         self.lista_finalizados.append(processo)
 
     def add_lista_pronto(self, processo):
