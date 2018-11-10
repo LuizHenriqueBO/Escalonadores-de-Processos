@@ -8,7 +8,7 @@ class BCP():
         self.tempo_CPU = 0
         self.tempo_executado = 0
         self.lista_IO = []
-
+        self.tempo_necessario = 0
         self.tempo_executando_io = 0
         self.tempo_espera = 0
 
@@ -51,6 +51,7 @@ class BCP():
     
     def set_tempo_CPU(self, tempo_cpu):
         self.tempo_CPU = int(tempo_cpu)
+        self.tempo_necessario = int(tempo_cpu)
 
     def set_lista_io(self, lista):
         print(lista)

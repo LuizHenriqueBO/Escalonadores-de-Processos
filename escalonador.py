@@ -249,6 +249,7 @@ class Escalonador():
                 # vai para processo_executando
                 processo_executando = gp.lista_pronto[0]
                 print("Executando proceso ID: %d" %(processo_executando.id))
+                print("Tempo Executado: %d| Tempo Necessario %d" %(processo_executando.tempo_executado, processo_executando.tempo_necessario))
                 del(gp.lista_pronto[0])
 
                 # Executar o processo o tempo de quantum
