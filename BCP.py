@@ -60,6 +60,7 @@ class BCP():
 
         ###################### metodos #############
     def executar(self):
+        #print("Executei")
         self.tempo_executado +=1
     
     def remove_lista_io(self):

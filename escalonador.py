@@ -210,7 +210,7 @@ class Escalonador():
     def escalonar(self, tempo_atual, lista_saida, lista_chegada):
         #   lista_saida.sort(key = lambda x: x.get_tempo_chegada())
 
-        for lista in range(lista_saida):
+        for lista in lista_saida:
             if(tempo_atual >= lista.tempo_chegada):
                 lista_chegada.append(lista_saida[0])
                 del(lista_saida[0])
@@ -221,7 +221,7 @@ class Escalonador():
     def RoundRobin(self, gp):
         print("entrei no RoundRobin")
 
-        quantum = 3         # tempo que ficará no processador
+        quantum = 3         # tempo que ficara no processador
         self.timer= 0
 
         # Ordeno a lista de processos por ordem de chegada
@@ -230,46 +230,67 @@ class Escalonador():
 
         # adiciona o primeiro processo na lista de pronto e tira da lista de processo
         gp.add_lista_pronto(lista_processos[0])
-        del(gp.get_lista_processos[0])
+        del(gp.lista_processos[0])
 
         # caso ainda tenha processo na lista de pronto, continua executando o algoritmo
-        while(len(gp.get_lista_pronto()) > 0):
-            
+        while( (len(gp.lista_processos) > 0 or len(gp.lista_bloqueado) > 0 or len(gp.lista_pronto) > 0)):
+            print('\n\n')
+            print("Tamanho lista de bloqueio: %d" %(len(gp.lista_bloqueado)))
+            print("While principal")
             # se o tempo atual for menor que o tempo de chegada do primeiro processo da lista de pronto,
-            # o processador fica ocioso, caso contrário, executa o processo
-            if(self.timer < gp.get_lista_pronto()[0].get_tempo_chegada()):
+            # o processador fica ocioso, caso contrario, executa o processo
+            if(len(gp.lista_pronto) <= 0 or self.timer < gp.lista_pronto[0].get_tempo_chegada()):
+                
                 print("OCIOSO")
                 self.timer +=1
             else:
 
-                # processo executando é o primeiro processo pronto, assim ele sai de pronto e,
+                # processo executando eh o primeiro processo pronto, assim ele sai de pronto e,
                 # vai para processo_executando
-                processo_executando = gp.get_lista_pronto()[0]
-                del(gp.get_lista_pronto()[0])
+                processo_executando = gp.lista_pronto[0]
+                print("Executando proceso ID: %d" %(processo_executando.id))
+                del(gp.lista_pronto[0])
 
                 # Executar o processo o tempo de quantum
                 for tempo in range(quantum):
                     #incrementa o tempo atual
-                    self.timer +=1
+                    #self.timer +=1
                     
-                    escalonar(tempo, gp.get_lista_processos(), pg.get_lista_pronto())
+                    self.escalonar(self.timer, gp.lista_processos, gp.lista_pronto)
 
                     # caso o processo acabou seu tempo de CPU vai para lista de finalizado e,
-                    # escalona o próximo processo da lista de pronto.
+                    # escalona o proximo processo da lista de pronto.
                     if(not(processo_executando.decrementar_tempo_cpu())):
                         gp.add_lista_finalizados(processo_executando)
-                        processo_executando = gp.get_lista_pronto()[0]
+                        if(len(gp.lista_pronto) > 0):
+                            processo_executando = gp.lista_pronto[0]
+                        break
 
                     if(processo_executando.solicita_io()):
-                        
+                        processo_executando.tempo_executando_io = 5
                         gp.add_lista_bloqueio(processo_executando)
-
-                    
                         #print("Entrei io")
-                        print("processo ocioso")
+                        print("Processo %d bloqueado pra IO" %(processo_executando.id))
                         self.timer += 6
+                        break
                     else:        
-                        self.timer+=1
-                    processo.executar()
+                        self.timer+= 1
+                    processo_executando.executar()
+                    if(tempo == 2):
+                        gp.lista_pronto.append(processo_executando)
+            tam = len(gp.lista_bloqueado)
+            i = 0
+            while(i < tam):
+                #print("While true")
+                gp.lista_bloqueado[i].tempo_executando_io -= 1
+                if(gp.lista_bloqueado[i].tempo_executando_io == 0):
+                    print("Processo com o id %d saiu do IO" %(gp.lista_bloqueado[i].id))
+                    gp.add_lista_pronto(gp.lista_bloqueado[i])
+                    del(gp.lista_bloqueado[i])
+                    gp.lista_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
+                    tam = len(gp.lista_bloqueado)
+                else:
+                    i += 1    
+                                
 
 
