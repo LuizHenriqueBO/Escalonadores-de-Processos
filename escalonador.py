@@ -254,6 +254,7 @@ class Escalonador():
 
                 # Executar o processo o tempo de quantum
                 for tempo in range(quantum):
+                    processo_executando.executar()
                     #incrementa o tempo atual
                     #self.timer +=1
                     
@@ -272,11 +273,11 @@ class Escalonador():
                         gp.add_lista_bloqueio(processo_executando)
                         #print("Entrei io")
                         print("Processo %d bloqueado pra IO" %(processo_executando.id))
-                        self.timer += 6
+                        self.timer += 1
                         break
                     else:        
                         self.timer+= 1
-                    processo_executando.executar()
+                    #processo_executando.executar()
                     if(tempo == 2):
                         gp.lista_pronto.append(processo_executando)
             tam = len(gp.lista_bloqueado)
