@@ -7,7 +7,9 @@ class BCP():
         self.tempo_inicio = 0
         self.tempo_CPU = 0
         self.tempo_executado = 0
-        self.lista_IO = []
+        self.fila_IO = []
+        self.tempo_IO = 0
+        self.tempo_fim = 0
 
         self.tempo_executando_io = 0
         self.tempo_espera = 0
@@ -27,12 +29,20 @@ class BCP():
     def get_tempo_CPU(self):
         return self.tempo_CPU
 
-    def get_lista_io(self):
-        return self.lista_IO            # testar pra ver se funciona com pop
+    def get_fila_io(self):
+        return self.fila_IO            # testar pra ver se funciona com pop
 
     def get_tempo_executado(self):
         return self.tempo_executado
 
+    def get_tempo_IO(self):
+        return self.tempo_IO
+
+    def get_tempo_fim(self):
+        return self.tempo_fim
+
+    def get_tempo_execucao(self):
+        return (self.tempo_fim - self.tempo_inicio)
 
  ################# setters ############################
                 
@@ -47,23 +57,43 @@ class BCP():
         self.tempo_chegada = int(chegada)
     
     def set_tempo_inicio(self, tempo_inicio):
-        self.tempo_inicio = int(tempo_inicio)
+        if(self.tempo_inicio <= 0):
+            self.tempo_inicio = int(tempo_inicio)
     
     def set_tempo_CPU(self, tempo_cpu):
         self.tempo_CPU = int(tempo_cpu)
 
-    def set_lista_io(self, lista):
-        print(lista)
-        self.lista_IO = list(map(int,lista)) if lista and lista[-1] else []
+    def set_fila_io(self, fila):
+        print(fila)
+        self.fila_IO = list(map(int,fila)) if fila and fila[-1] else []
+
+    def set_tempo_fim(self, clock):
+        self.tempo_fim =  clock
+
+    ######################################
+
+
+
+
+    def add_tempo_IO(self):
+        self.tempo_IO = 6
+    
+    def decrem_tempo_IO(self):
+        if(self.tempo_IO > 0):
+            self.tempo_IO -=1
+            return True
+        return False
 
    
+
+
 
         ###################### metodos #############
     def executar(self):
         self.tempo_executado +=1
     
-    def remove_lista_io(self):
-        self.lista_IO.remove(self.lista_IO[0])
+    def remove_fila_io(self):
+        self.fila_IO.remove(self.fila_IO[0])
     
 
     def decrementar_tempo_cpu(self):
@@ -82,10 +112,16 @@ class BCP():
 
     def solicita_io(self):
         #print("Solicita io %d" % self.tempo_executado)
-        if(self.tempo_executado in self.lista_IO):
+        if(self.tempo_executado in self.fila_IO):
             print("Entrei em IO %d" % self.tempo_executado)
             #print("QQQ")
             return True
         else:
             return False
+
+
+
+    def imprimedados(self):
+        print(self.id, self.tempo_CPU, self.prioridade, self.tempo_chegada, self.fila_IO, self.tempo_executado, self.tempo_inicio, self.tempo_IO)
+       
 

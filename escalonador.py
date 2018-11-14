@@ -22,6 +22,28 @@ class Escalonador():
         return self.timer
 
 
+    def statistical_graphs(self, title_plus='',):
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        import pandas as pd 
+        sns.set()
+        #plt.style.use('classic')
+
+        x = self.lista_execucao[0]
+        y = self.lista_execucao[1]
+
+        colors = ['#2300A8', '#00A658']
+
+        plt.xticks(range(len(x)), x)
+        plt.bar(range(len(y)), y, align='center', color=colors)
+
+        plt.title(title_plus)
+        plt.xlabel('Processo (ID)')
+        plt.ylabel('Tempo (ciclo de cloque)')
+
+        plt.show()
+
+
     ###################--------FIFO------##################
 
     def fifo(self, gp):
@@ -30,10 +52,10 @@ class Escalonador():
 
         #mudei a forma de chegada dos dados
         
-        lista_processos = gp.get_lista_processos()
+        fila_processos = gp.get_fila_processos()
 
-        lista_processos.sort(key = lambda x: x.get_tempo_chegada())
-        for processo in lista_processos:
+        fila_processos.sort(key = lambda x: x.get_tempo_chegada())
+        for processo in fila_processos:
             #print(processo.get_tempo_CPU)
             processo.set_tempo_inicio(self.timer)
             print("Cheguei no tempo %d" %(processo.get_tempo_inicio()))            
@@ -51,66 +73,66 @@ class Escalonador():
 
 
     def sjf(self, gp):
-        lista_remocao = list()
-        lista_processos = gp.get_lista_processos()
+        fila_remocao = list()
+        fila_processos = gp.get_fila_processos()
         print("entrei no sjf")
         self.timer = 0
-        #lista_processos.sort(key = lambda x: x.get_tempo_CPU())
-        lista_processos.sort(key = lambda x: x.get_tempo_chegada())
-        #print(lista_processos[3].get_tempo_chegada())
+        #fila_processos.sort(key = lambda x: x.get_tempo_CPU())
+        fila_processos.sort(key = lambda x: x.get_tempo_chegada())
+        #print(fila_processos[3].get_tempo_chegada())
 
 
                                                         
-        while (self.timer < lista_processos[0].get_tempo_chegada()):
+        while (self.timer < fila_processos[0].get_tempo_chegada()):
             print("OCIOSO")
             self.timer +=1
             
-        gp.add_lista_pronto(lista_processos[0])
-        lista_processos.remove(lista_processos[0])
+        gp.add_fila_pronto(fila_processos[0])
+        fila_processos.remove(fila_processos[0])
 
-        for p in lista_processos:
+        for p in fila_processos:
             print("ID = %s" % (p.get_id()))
 
 
-        #for processo in gp.get_lista_pronto():
+        #for processo in gp.get_fila_pronto():
             #print(processo)
 
-        while(len(gp.lista_pronto) > 0):
-            gp.lista_pronto[0].set_tempo_inicio(self.timer)
-            print("Ganhei o processador no tempo %d e cheguei no tempo %d" %(gp.lista_pronto[0].get_tempo_inicio(), gp.lista_pronto[0].get_tempo_chegada())) 
-            for tempo in range(gp.lista_pronto[0].get_tempo_CPU()):
+        while(len(gp.fila_pronto) > 0):
+            gp.fila_pronto[0].set_tempo_inicio(self.timer)
+            print("Ganhei o processador no tempo %d e cheguei no tempo %d" %(gp.fila_pronto[0].get_tempo_inicio(), gp.fila_pronto[0].get_tempo_chegada())) 
+            for tempo in range(gp.fila_pronto[0].get_tempo_CPU()):
 
-                if gp.lista_pronto[0].solicita_io():
+                if gp.fila_pronto[0].solicita_io():
                     #print("Entrei io")
                     print("processo ocioso")
                     self.timer += 6
                 else:
                     self.timer+=1
-                gp.lista_pronto[0].executar()
-            del gp.lista_pronto[0]    
+                gp.fila_pronto[0].executar()
+            del gp.fila_pronto[0]    
             print("Timer %d" %self.timer)
 
-            if len(lista_processos) > 0:
-                for i in range(len(lista_processos)):
+            if len(fila_processos) > 0:
+                for i in range(len(fila_processos)):
                     #print("ID = %s" % (p.get_id()))
                     #print(p.get_id())
                     # PEGAR O ID COM O .INDEX 
-                    if lista_processos[i].get_tempo_chegada() <= self.timer:
+                    if fila_processos[i].get_tempo_chegada() <= self.timer:
                         print("ID = %s" % (p.get_id()))
-                        gp.add_lista_pronto(lista_processos[i])
-                        #del lista_processos[i]]
-                        lista_remocao.append(lista_processos[i])
-                        if len(lista_processos) == 0:
+                        gp.add_fila_pronto(fila_processos[i])
+                        #del fila_processos[i]]
+                        fila_remocao.append(fila_processos[i])
+                        if len(fila_processos) == 0:
                             break
-            for process in lista_remocao:
-                if process in lista_processos:
-                    lista_processos.remove(process)
+            for process in fila_remocao:
+                if process in fila_processos:
+                    fila_processos.remove(process)
 
-                #gp.lista_pronto.remove(processo)
-            #print(gp.lista_pronto[1].get_tempo_CPU)    
-            gp.lista_pronto.sort(key = lambda x: x.get_tempo_CPU())
+                #gp.fila_pronto.remove(processo)
+            #print(gp.fila_pronto[1].get_tempo_CPU)    
+            gp.fila_pronto.sort(key = lambda x: x.get_tempo_CPU())
             print('\n\n\n')
-            for p in gp.lista_pronto:
+            for p in gp.fila_pronto:
                 print(p.get_id())
             print('\n\n\n')  
                 
@@ -124,62 +146,62 @@ class Escalonador():
         self.timer = 0
         self.tempo_ocioso = 0
         
-        gp.lista_processos.sort(key = lambda x: x.get_tempo_chegada())
+        gp.fila_processos.sort(key = lambda x: x.get_tempo_chegada())
 
-        while( (len(gp.lista_processos) != 0 or len(gp.lista_bloqueado) != 0 or len(gp.lista_pronto) != 0) and self.timer < 100):
-            print("%d %d %d" %(len(gp.lista_processos), len(gp.lista_bloqueado), len(gp.lista_pronto)))
+        while( (len(gp.fila_processos) != 0 or len(gp.fila_bloqueado) != 0 or len(gp.fila_pronto) != 0) and self.timer < 100):
+            print("%d %d %d" %(len(gp.fila_processos), len(gp.fila_bloqueado), len(gp.fila_pronto)))
             # chegou algum processo nesse ciclo?
-            if((len(gp.lista_processos) != 0) and (int(gp.lista_processos[0].tempo_chegada) == self.timer)):
+            if((len(gp.fila_processos) != 0) and (int(gp.fila_processos[0].tempo_chegada) == self.timer)):
                 print('chegou')
-                print(gp.lista_processos[0].id)
+                print(gp.fila_processos[0].id)
                 print(self.timer)
-                gp.add_lista_pronto(gp.lista_processos[0])
-                gp.lista_processos.remove(gp.lista_processos[0])
+                gp.add_fila_pronto(gp.fila_processos[0])
+                gp.fila_processos.remove(gp.fila_processos[0])
             
-            gp.lista_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
+            gp.fila_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
             
-            # o processo em execucao tem evento io? se sim, coloca na lista de io e remove da lista de prontos
-            if(len(gp.lista_pronto) > 0):
-                while(gp.lista_pronto[0].solicita_io()): 
-                    gp.lista_pronto[0].tempo_executando_io = 5
-                    gp.add_lista_bloqueio(gp.lista_pronto[0])
-                    gp.lista_pronto.remove(gp.lista_pronto[0])
-                    if(len(gp.lista_pronto) == 0):
+            # o processo em execucao tem evento io? se sim, coloca na fila de io e remove da fila de prontos
+            if(len(gp.fila_pronto) > 0):
+                while(gp.fila_pronto[0].solicita_io()): 
+                    gp.fila_pronto[0].tempo_executando_io = 5
+                    gp.add_fila_bloqueio(gp.fila_pronto[0])
+                    gp.fila_pronto.remove(gp.fila_pronto[0])
+                    if(len(gp.fila_pronto) == 0):
                         break
                     pass
                 pass
             # tem processos a serem executados?
-            if(len(gp.lista_pronto) == 0):
+            if(len(gp.fila_pronto) == 0):
                 self.tempo_ocioso += 1
                 pass
 
             else:
-                # soma +1 no tempo de espera do processos na lista de prontos
-                for processo in gp.lista_pronto:
+                # soma +1 no tempo de espera do processos na fila de prontos
+                for processo in gp.fila_pronto:
                     processo.tempo_espera += 1
                     pass
 
-                executando = gp.lista_pronto[0]
+                executando = gp.fila_pronto[0]
 
                 # processo em execucao nao ta em espera, tira -1 do tempo de espera dele
                 executando.tempo_espera -= 1
 
                 executando.executar()
                 if(executando.tempo_executado == executando.get_tempo_CPU()):
-                    gp.add_lista_finalizados(executando)
-                    gp.lista_pronto.remove(executando)
+                    gp.add_fila_finalizados(executando)
+                    gp.fila_pronto.remove(executando)
                     pass
                 
             # consome 1 ciclo de IO de cada processo bloqueado
-            tam = len(gp.lista_bloqueado)
+            tam = len(gp.fila_bloqueado)
             i = 0
             while(i < tam):
-                gp.lista_bloqueado[i].tempo_executando_io -= 1
-                if(gp.lista_bloqueado[i].tempo_executando_io == 0):
-                    gp.add_lista_pronto(gp.lista_bloqueado[i])
-                    del(gp.lista_bloqueado[i])
-                    gp.lista_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
-                    tam = len(gp.lista_bloqueado)
+                gp.fila_bloqueado[i].tempo_executando_io -= 1
+                if(gp.fila_bloqueado[i].tempo_executando_io == 0):
+                    gp.add_fila_pronto(gp.fila_bloqueado[i])
+                    del(gp.fila_bloqueado[i])
+                    gp.fila_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
+                    tam = len(gp.fila_bloqueado)
                 else:
                     i += 1
 
@@ -189,11 +211,11 @@ class Escalonador():
         print("wwwwwwwwwwwwwwwwwwww")
         print(self.tempo_ocioso)
         print(self.timer)
-        print(len(gp.lista_pronto))
-        print(len(gp.lista_bloqueado))
-        print(len(gp.lista_processos))
+        print(len(gp.fila_pronto))
+        print(len(gp.fila_bloqueado))
+        print(len(gp.fila_processos))
 
-        for processo in gp.lista_finalizados:
+        for processo in gp.fila_finalizados:
             print("processo")
             print(processo.id)
             print("tempo executado")
@@ -207,69 +229,207 @@ class Escalonador():
 
 
     ###################--------RoundRobin------##################
-    def escalonar(self, tempo_atual, lista_saida, lista_chegada):
-        #   lista_saida.sort(key = lambda x: x.get_tempo_chegada())
+    def escalonar(self, tempo_atual, fila_saida, fila_chegada):
+        #   fila_saida.sort(key = lambda x: x.get_tempo_chegada())
 
-        for lista in range(lista_saida):
-            if(tempo_atual >= lista.tempo_chegada):
-                lista_chegada.append(lista_saida[0])
-                del(lista_saida[0])
+        for fila in (fila_saida):
+            if(tempo_atual >= fila.tempo_chegada):
+                fila_chegada.append(fila_saida[0])
+                del(fila_saida[0])
+                return True
+            return False
 
 
+
+
+
+
+   
+
+    def imprimefila(self, fila):
+        for processo in fila:
+            processo.imprimedados()
+        print("\n\n\n\n\n")
+            
+
+
+    def imprimeprocesso(self, processo):
+        processo.imprimedados()
+        print("\n\n\n\n\n")
 
 
     def RoundRobin(self, gp):
         print("entrei no RoundRobin")
 
-        quantum = 3         # tempo que ficará no processador
+        self.quantum = 4         # tempo que ficará no processador
         self.timer= 0
 
-        # Ordeno a lista de processos por ordem de chegada
-        lista_processos = gp.get_lista_processos()
-        lista_processos.sort(key = lambda x: x.get_tempo_chegada())
+        # Ordeno a fila de processos por ordem de chegada
+        gp.get_fila_processos().sort(key = lambda x: x.get_tempo_chegada())
+        
+        # caso ainda tenha processo na fila de pronto, bloqueado e processos
+        # continua executando o algoritmo
+        while((len(gp.get_fila_pronto()) > 0 ) or (len(gp.get_fila_bloqueado()) > 0 ) or (len(gp.get_fila_processos()) > 0 )):
+    
+            # se tem alguém na fila de bloqueado? caso tenha... tem alguém na
+            # posição [0] que tem o tempo menor que o tempo atual ? 
+            # se sim, adiciona na fila de pronto e tira da fila de bloqueio!
+            #if((len(gp.get_fila_bloqueado()) > 0) and (self.timer >= gp.get_fila_bloqueado()[0].get_tempo_executado()) and gp.get_fila_bloqueado()[0].get_tempo_IO()):
 
-        # adiciona o primeiro processo na lista de pronto e tira da lista de processo
-        gp.add_lista_pronto(lista_processos[0])
-        del(gp.get_lista_processos[0])
+            if((len(gp.get_fila_bloqueado()) > 0) and ( not (gp.get_fila_bloqueado()[0].decrem_tempo_IO()))):
+                print("\n tem alguem na fila de bloqueado ?")
+                print("tempo atual:",self.timer)
+                self.imprimefila(gp.get_fila_bloqueado())
+                gp.add_fila_pronto(gp.get_fila_bloqueado()[0])
+                del(gp.get_fila_bloqueado()[0])
+                print("fila de pronto")
+                self.imprimefila(gp.get_fila_pronto())
 
-        # caso ainda tenha processo na lista de pronto, continua executando o algoritmo
-        while(len(gp.get_lista_pronto()) > 0):
-            
-            # se o tempo atual for menor que o tempo de chegada do primeiro processo da lista de pronto,
-            # o processador fica ocioso, caso contrário, executa o processo
-            if(self.timer < gp.get_lista_pronto()[0].get_tempo_chegada()):
-                print("OCIOSO")
-                self.timer +=1
             else:
+                print("não verifico se tem bloqueado")
+                print("tempo atual:",self.timer)
 
-                # processo executando é o primeiro processo pronto, assim ele sai de pronto e,
-                # vai para processo_executando
-                processo_executando = gp.get_lista_pronto()[0]
-                del(gp.get_lista_pronto()[0])
 
-                # Executar o processo o tempo de quantum
-                for tempo in range(quantum):
-                    #incrementa o tempo atual
-                    self.timer +=1
-                    
-                    escalonar(tempo, gp.get_lista_processos(), pg.get_lista_pronto())
+            # se tem alguém na fila de processos ? caso tenha... tem alguém na
+            # posição [0] que tem o tempo de chegada menor que o tempo atual ? 
+            # se sim, adiciona na fila de pronto e tira da fila de processos!
+            if((len(gp.get_fila_processos()) > 0 ) and (self.timer >= gp.get_fila_processos()[0].get_tempo_chegada())):
+                print("tem alguem na fila de processo ? tempo de chegada", self.timer)
+                print("tempo atual:",self.timer)
+                self.imprimefila(gp.get_fila_processos())
+                gp.add_fila_pronto(gp.get_fila_processos()[0])
+                del(gp.get_fila_processos()[0])
+                print("fila de pronto")
+                self.imprimefila(gp.get_fila_pronto())
 
-                    # caso o processo acabou seu tempo de CPU vai para lista de finalizado e,
-                    # escalona o próximo processo da lista de pronto.
-                    if(not(processo_executando.decrementar_tempo_cpu())):
-                        gp.add_lista_finalizados(processo_executando)
-                        processo_executando = gp.get_lista_pronto()[0]
+            else:
+                print("não verifico se tem processos")
+                print("tempo atual:",self.timer)
 
-                    if(processo_executando.solicita_io()):
+
+            #tenho alguem na fila de pronto ? se sim executa, se não processador fica ocioso
+            if( len(gp.get_fila_pronto()) > 0):
+               
+                print("fila de pronto")
+                self.imprimefila(gp.get_fila_pronto())
+
+                for processo in gp.get_fila_pronto():
+                    processo  = gp.get_fila_pronto()[0]
+                    #print(processo.get_tempo_CPU)
+                    processo.set_tempo_inicio(self.timer)
+                    print("tempo de inicio do processo: ")
+                    self.imprimeprocesso(processo)
+                    #print("Cheguei no tempo %d" %(processo.get_tempo_inicio()))   
+
+
+                    #for tempo in range(self.quantum):
+                    self.tempo = 0
+                    while(1):
+                        if(self.tempo < self.quantum):
+                            
+                            print("\n tempo: ",self.tempo)
+                            
+                            # se tem alguém na fila de bloqueado? caso tenha... tem alguém na
+                            # posição [0] que tem o tempo menor que o tempo atual ? 
+                            # se sim, adiciona na fila de pronto e tira da fila de bloqueio!
+                            #if((len(gp.get_fila_bloqueado()) > 0) and (self.timer >= gp.get_fila_bloqueado()[0].get_tempo_executado())):
+                            if((len(gp.get_fila_bloqueado()) > 0) and ( not (gp.get_fila_bloqueado()[0].decrem_tempo_IO()))):
+                                print("\n\n ( interno )  tem alguem na fila de bloqueado ? tempo atual: ",self.timer)
+                                
+                                self.imprimefila(gp.get_fila_bloqueado())
+                                gp.add_fila_pronto(gp.get_fila_bloqueado()[0])
+                                del(gp.get_fila_bloqueado()[0])
+                                print("fila de pronto")
+                                self.imprimefila(gp.get_fila_pronto())
+                                
+                            else:
+                                print("\n\n ( interno )  não verifico se tem bloqueado tempo atual: ",self.timer)
+
+
+                            # se tem alguém na fila de processos ? caso tenha... tem alguém na
+                            # posição [0] que tem o tempo de chegada menor que o tempo atual ? 
+                            # se sim, adiciona na fila de pronto e tira da fila de processos!
+                            if((len(gp.get_fila_processos()) > 0 ) and (self.timer >= gp.get_fila_processos()[0].get_tempo_chegada())):
+                                print("\n\n ( interno ) tem alguem na fila de processo ? tempo atual:",self.timer)
+                                self.imprimefila(gp.get_fila_processos())
+                                gp.add_fila_pronto(gp.get_fila_processos()[0])
+                                del(gp.get_fila_processos()[0])
+                                print("\n\n fila de pronto")
+                                self.imprimefila(gp.get_fila_pronto())
+
+                            else:
+                                print("\n\n ( interno ) não verifico se tem processos tempo atual:",self.timer)
+                     
+                     
+                            #se tem tempo de CPU ? se sim executa
+                            if((processo.get_tempo_CPU() - processo.get_tempo_executado()) > 0):
+                                
+                                processo.executar()
+                                print("\n\n executa no tempo: ",self.timer)
+                               # print("cccccccccccccccccc",processo.get_tempo_CPU() - processo.get_tempo_executado())
+                                print("executou o processo: ",end = "")
+                                self.imprimeprocesso(processo)
+                                self.timer+=1
+                                print("fila de pronto")
+                                self.imprimefila(gp.get_fila_pronto())
+
+                                #print("finalizados",)
+                                #self.imprimefila(gp.get_fila_finalizados())
+                                    
+                                if((processo.get_tempo_CPU() - processo.get_tempo_executado()) <= 0):
+                                    gp.add_fila_finalizados(gp.get_fila_pronto()[0])
+                                    gp.get_fila_finalizados()[-1].set_tempo_fim(self.timer)
+                                    del(gp.get_fila_pronto()[0])
+                                    print("finalizados",)
+                                    self.imprimefila(gp.get_fila_finalizados())
+                                    break
+                                #self.timer+=1
+                                
+
+
+                                if processo.solicita_io():
+                                    # tira o processo da lista de pronto e coloca na lista de finalizado
+                                    gp.get_fila_pronto()[0].get_fila_io().pop(0)
+                                    print("\n\nDEI UM POP\n\n")
+                                    gp.add_fila_bloqueio(gp.get_fila_pronto()[0])
+                                    gp.get_fila_bloqueado()[0].add_tempo_IO()
+                                    print("fila de bloqueio")
+                                    self.imprimefila(gp.get_fila_bloqueado())
+                                    del(gp.get_fila_pronto()[0])
+                                    print("fila de pronto")
+                                    self.imprimefila(gp.get_fila_pronto())
+                                    break
+                                
+                                    
+                                # senão: addiciona na lista de finalizado e tira da lista de pronto!
+                            else:
+                                gp.add_fila_finalizados(gp.get_fila_pronto()[0])
+                                gp.get_fila_finalizados()[-1].set_tempo_fim(self.timer)
+                                del(gp.get_fila_pronto()[0])
+                                print("finalizados",)
+                                self.imprimefila(gp.get_fila_finalizados())
+                                #self.timer+=1
+
+                            self.tempo += 1
+
+
+                        elif((gp.get_fila_pronto())):
+                            gp.add_fila_pronto(gp.get_fila_pronto()[0])
+                            del(gp.get_fila_pronto()[0])
+                            print("volta pro fim da fila....")
+                            print("fila de pronto")
+                            self.imprimefila(gp.get_fila_pronto())
+                            self.tempo = 0
+                            break
                         
-                        gp.add_lista_bloqueio(processo_executando)
+            else:
+                self.timer +=1
 
-                    
-                        #print("Entrei io")
-                        print("processo ocioso")
-                        self.timer += 6
-                    else:        
-                        self.timer+=1
-                    processo.executar()
-
-
+        self.lista_execucao = []
+        #print(len(gp.get_fila_finalizados()))
+        for processo in gp.get_fila_finalizados():
+            self.lista_execucao.append((processo.get_id(), processo.get_tempo_execucao()))
+            #print("ewdmekde")
+        self.lista_execucao = list(zip(*self.lista_execucao))
+        self.statistical_graphs('Escalonador de processo RoundRobin')
+        print(self.lista_execucao)
