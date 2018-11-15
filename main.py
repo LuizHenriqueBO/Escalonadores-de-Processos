@@ -17,25 +17,25 @@ def leitor(file_name):
 
 
 def main():
-    lista_processos = leitor("processos.txt")
+    fila_processos = leitor("processos.txt")
 
     gp = Gerenciador()
-    for processo in lista_processos:
+    for processo in fila_processos:
         bcp = BCP()
         bcp.set_id(processo[0])
-        bcp.set_tempo_CPU(int(processo[1]))                        # setando os dados no bcp
+        bcp.set_tempo_CPU(processo[1])                        # setando os dados no bcp
         bcp.set_prioridade(processo[2])
         bcp.set_tempo_chegada(processo[3])
-        bcp.set_lista_io(processo[4:])
+        bcp.set_fila_io(processo[4:])
         
-        gp.add_lista_processos(bcp)
+        gp.add_fila_processos(bcp)
 
         
 
     
-    for i in gp.get_lista_processos():
-        #i.lista_IO = [int(k) for k in i.lista_IO]
-        print(i.get_id(), i.get_tempo_chegada(), i.get_lista_io(), i.get_tempo_CPU())
+    for i in gp.get_fila_processos():
+        #i.fila_IO = [int(k) for k in i.fila_IO]
+        print(i.get_id(), i.get_tempo_chegada(), i.get_fila_io(), i.get_tempo_CPU())
              
     escalonador = Escalonador()
     escalonador.RoundRobin(gp)
