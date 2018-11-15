@@ -117,6 +117,7 @@ class Escalonador():
 
 
 
+
     ###################--------PRIORIDADE------##################
 
     def prioridade(self, gp):
