@@ -36,9 +36,9 @@ def main():
     for i in gp.get_fila_processos():
         #i.fila_IO = [int(k) for k in i.fila_IO]
         print(i.get_id(), i.get_tempo_chegada(), i.get_fila_io(), i.get_tempo_CPU())
-             
+
     escalonador = Escalonador()
-    escalonador.RoundRobin(gp)
+    escalonador.prioridade(gp)
     print(escalonador.tempo_total())
     'Tempo total {}'.format(escalonador.tempo_total())
 

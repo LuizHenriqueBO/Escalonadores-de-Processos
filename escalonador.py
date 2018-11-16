@@ -257,13 +257,13 @@ class Escalonador():
     
     
     def verificaFilaBloqueio(self, gp, timer):
-            # verifica se tem alguém na fila de bloqueio, caso tenha, decrementa o tempo de I/O e não escalona,
-            # caso for decrementar e não possível, a função decrem_tempo_IO() retorna FALSE, negando essa
-            # condição ela se torna verdadeira, portando devemos escalonar para a fila de pronto 
-            # pois o tempo de I/O já esgotou.
+        # verifica se tem alguém na fila de bloqueio, caso tenha, decrementa o tempo de I/O e não escalona,
+        # caso for decrementar e não possível, a função decrem_tempo_IO() retorna FALSE, negando essa
+        # condição ela se torna verdadeira, portando devemos escalonar para a fila de pronto 
+        # pois o tempo de I/O já esgotou.
 
-            if((len(gp.get_fila_bloqueado()) > 0) and (not (gp.get_fila_bloqueado()[0].decrem_tempo_IO()))):
-                self.escalonar(self.timer, gp.get_fila_bloqueado(),gp.get_fila_pronto())
+        if((len(gp.get_fila_bloqueado()) > 0) and (not (gp.get_fila_bloqueado()[0].decrem_tempo_IO()))):
+            self.escalonar(self.timer, gp.get_fila_bloqueado(),gp.get_fila_pronto())
 
 
 
