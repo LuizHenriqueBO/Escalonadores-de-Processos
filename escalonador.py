@@ -143,64 +143,55 @@ class Escalonador():
     ###################--------PRIORIDADE------##################
 
     def prioridade(self, gp):
-        print("entrei em prioridade")
+        print("Algoritmo Prioridade")
         # inicia as variaveis contadoras de tempo com 0
         self.timer = 0
         self.tempo_ocioso = 0
         
-        # ordena a fila de processos por tempo de chegada
+        # ordena a lista de processos por tempo de chegada
         gp.fila_processos.sort(key = lambda x: x.get_tempo_chegada())
 
         # cada iteração do laço equivale a um ciclo da CPU
-        # o loop termina quando todos os processos foram pra fila de finalizados
-        while(len(gp.fila_processos) != 0 or len(gp.fila_bloqueado) != 0 or len(gp.fila_pronto) != 0):
-            print("%d %d %d" %(len(gp.fila_processos), len(gp.fila_bloqueado), len(gp.fila_pronto)))
+        # o loop termina quando todos os processos foram pra lista de finalizados
+        while((len(gp.fila_processos)) != 0 or (len(gp.fila_bloqueado)) != 0 or (len(gp.fila_pronto) != 0)):
 
-            # chegou algum processo nesse ciclo? se sim: remove da fila de processos e insere na fila de aptos
+            # chegou algum processo nesse ciclo? se sim: remove da lista de processos e insere na lista de aptos
             if((len(gp.fila_processos) != 0) and (int(gp.fila_processos[0].tempo_chegada) == self.timer)):
-                print('chegou')
-                print(gp.fila_processos[0].id)
-                print(self.timer)
                 gp.add_fila_pronto(gp.fila_processos[0])
                 gp.fila_processos.remove(gp.fila_processos[0])
 
-            # A fila de prontos (aptos) é ordenada por prioridade
-            # o processo que estiver na primeira posição da fila é o processo a ganhar a CPU
+            # A lista de prontos (aptos) é ordenada por prioridade
+            # o processo que estiver na primeira posição da lista é o processo a ganhar a CPU
             gp.fila_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
 
             # Mas se o mesmo solicita um evento IO nesse momento,
-            # ele é removido da fila de aptos e vai para a fila de bloqueados
+            # ele é removido da lista de aptos e vai para a lista de bloqueados
             if(len(gp.fila_pronto) > 0):
                 # só pára quando encontrar um processo sem requisição de IO no momento, 
-                # ou se acabarem todos os processos da fila de prontos
+                # ou se acabarem todos os processos da lista de prontos
                 while(gp.fila_pronto[0].solicita_io()): 
                     gp.fila_pronto[0].tempo_executando_io = 5 # cada evento de IO deixa o processo bloqueado por 5 ciclos da CPU
                     gp.add_fila_bloqueio(gp.fila_pronto[0])
                     gp.fila_pronto.remove(gp.fila_pronto[0])
+                    # reordena a lista de aptos por prioridade (ordem crescente)
+                    gp.fila_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
                     if(len(gp.fila_pronto) == 0):
                         break
-                    pass
-                pass
 
-            # reordena a fila de aptos por prioridade (ordem crescente)
-            gp.fila_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
-
-            # verifica se ainda tẽm processos a serem executados na fila de aptos
+            # verifica se ainda tẽm processos a serem executados na lista de aptos
             # se não houver processos, a CPU ficou ociosa nesse ciclo
             if(len(gp.fila_pronto) == 0):
                 self.tempo_ocioso += 1
-                pass
 
-            # caso contrário, o processo deve ser executado e os demais da fila de aptos ficam em espera
+            # caso contrário, o processo deve ser executado e os demais da lista de aptos ficam em espera
             else:
 
                 # esse é o processo que ganhou a CPU
                 executando = gp.fila_pronto[0]
 
-                # adiciona +1 ciclo de espera pra cada processo da fila de aptos
+                # adiciona +1 ciclo de espera pra cada processo da lista de aptos
                 for processo in gp.fila_pronto:
                     processo.tempo_espera += 1
-                    pass
 
                 # menos o processo em execução
                 executando.tempo_espera -= 1
@@ -209,36 +200,39 @@ class Escalonador():
                 executando.executar()
 
                 # Se o processo nao precisa mais usar a CPU
-                # o mesmo é removido da fila de aptos, e vai pra fila de finalizados
+                # o mesmo é removido da lista de aptos, e vai pra lista de finalizados
                 if(executando.tempo_executado == executando.get_tempo_CPU()):
                     gp.add_fila_finalizados(executando)
                     gp.fila_pronto.remove(executando)
-                    pass
                 
             # a cada ciclo que se passa, é preciso subtrair 1 ciclo de bloqueio dos processos que estão em evento IO 
             tam = len(gp.fila_bloqueado)
             i = 0
             while(i < tam):
                 gp.fila_bloqueado[i].tempo_executando_io -= 1
-                # se o evento já acabou, o processo é devolvido pra fila de aptos e removido da fila de bloqueio
+                # se o evento já acabou, o processo é devolvido pra lista de aptos e removido da lista de bloqueio
                 if(gp.fila_bloqueado[i].tempo_executando_io == 0):
                     gp.add_fila_pronto(gp.fila_bloqueado[i])
-                    del(gp.fila_bloqueado[i])
+                    gp.fila_bloqueado.remove(gp.fila_bloqueado[i])
                     tam = len(gp.fila_bloqueado)
                 else:
                     i += 1
             
-            # a fila de aptos é ordenada novamente
+            # a lista de aptos é ordenada novamente
             gp.fila_pronto.sort(key = lambda x: x.get_prioridade(), reverse = True)
 
             # +1 ciclo de CPU se encerra
             self.timer += 1
-            pass
 
+        print("CPU Tempo Ocisoso")
         print(self.tempo_ocioso)
+        print("CPU Total Ciclos")
         print(self.timer)
+        print("Tam lista de prontos")
         print(len(gp.fila_pronto))
+        print("Tam lista de bloqueio")
         print(len(gp.fila_bloqueado))
+        print("Tam lista de processos")
         print(len(gp.fila_processos))
 
         for processo in gp.fila_finalizados:
@@ -247,10 +241,8 @@ class Escalonador():
             print("tempo executado")
             print(processo.tempo_executado)
             print("tempo de espera")
-            print(processo.tempo_espera)
-            pass       
+            print(processo.tempo_espera)     
 
-    
     
     ###################--------RoundRobin------##################
     

@@ -136,6 +136,7 @@ class BCP():
         #print("Solicita io %d" % self.tempo_executado)
         if(self.tempo_executado in self.fila_IO):
             print("Entrei em IO %d" % self.tempo_executado)
+            self.fila_IO.remove(self.fila_IO[0])
             #print("QQQ")
             return True
         else:
