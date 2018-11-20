@@ -12,7 +12,6 @@ class BCP():
         self.tempo_IO = 0
         self.tempo_fim = 0
 
-        self.tempo_executando_io = 0
         self.tempo_espera = 0
 
     def get_id(self):
