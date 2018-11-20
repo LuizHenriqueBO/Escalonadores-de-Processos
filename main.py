@@ -47,8 +47,8 @@ def main():
         print("[3] Prioridade")
         print("[4] Round Robin")
         print("[0] Sair")
-
-        opcao = input()
+        
+        opcao = input(">> ")
         if(opcao == '1'):
             escalonador.fifo(gp)
         if(opcao == '2'):
