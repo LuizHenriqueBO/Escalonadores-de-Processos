@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import os # biblioteca pra usar o método de limpar a tela
+
 
 from BCP import BCP
 from gerenciador import Gerenciador     # do arquivo gerenciador importa a classe gerenciandor
@@ -41,6 +43,9 @@ def main():
             
         escalonador = Escalonador()
 
+
+        # limpa a tela no Windows ou Linux
+        os.system('cls' if os.name == 'nt' else 'clear')
 
         print("Escalonadores")
         print("[1] FIFO")
